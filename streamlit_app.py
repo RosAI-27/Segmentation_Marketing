@@ -24,9 +24,47 @@ st.title("Analyse des Clients E-commerce")
 st.write("Application interactive pour explorer le profil de nos 1000 clients. 📊")
 
 # CHARGEMENT ET NETTOYAGE DES DONNEES
+# on essaie plusieurs methodes de chargement pour etre robuste
+# en cas de difference de format entre local et GitHub
 
-# on charge le dataset
-df = pd.read_csv("segmentation_marketing_raw.csv", sep=";")
+df = None
+
+# methode 1 : point-virgule (format original)
+try:
+    df = pd.read_csv("segmentation_marketing_raw.csv", sep=";")
+    if len(df.columns) == 1:
+        raise ValueError("Mauvais separateur")
+except:
+    pass
+
+# methode 2 : virgule
+try:
+    df = pd.read_csv("segmentation_marketing_raw.csv", sep=",")
+    if len(df.columns) == 1:
+        raise ValueError("Mauvais separateur")
+except:
+    pass
+
+# methode 3 : auto-detection avec python engine
+try:
+    df = pd.read_csv("segmentation_marketing_raw.csv", sep=None, engine="python")
+except:
+    pass
+
+# si aucune methode ne marche, on affiche une erreur
+if df is None or len(df.columns) != 5:
+    st.error("Erreur de chargement du CSV. Verifiez que le fichier segmentation_marketing_raw.csv est present.")
+    st.stop()
+
+# on renomme les colonnes si elles ont des espaces ou des caracteres bizarres
+df.columns = [c.strip() for c in df.columns]
+
+# on verifie que les colonnes attendues sont presentes
+cols_attendues = ["revenu_annuel", "score_fidelite", "frequence_achat", "depenses_moyennes", "anciennete_client"]
+for col in cols_attendues:
+    if col not in df.columns:
+        st.error(f"Colonne manquante : {col}. Colonnes trouvees : {list(df.columns)}")
+        st.stop()
 
 # copie pour le nettoyage
 df_clean = df.copy()
