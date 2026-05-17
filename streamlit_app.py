@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 
@@ -43,8 +44,8 @@ for col in df_clean.columns:
 st.sidebar.header("Filtres 🔍")
 
 # slider pour le revenu
-min_rev = int(df_clean["revenu_annuel"].min())
-max_rev = int(df_clean["revenu_annuel"].max())
+min_rev = math.floor(df_clean["revenu_annuel"].min())
+max_rev = math.ceil(df_clean["revenu_annuel"].max())
 revenu_range = st.sidebar.slider(
     "Revenu annuel (€)",
     min_value=min_rev,
@@ -53,8 +54,8 @@ revenu_range = st.sidebar.slider(
 )
 
 # slider pour l'anciennete
-min_anc = int(df_clean["anciennete_client"].min())
-max_anc = int(df_clean["anciennete_client"].max())
+min_anc = math.floor(df_clean["anciennete_client"].min())
+max_anc = math.ceil(df_clean["anciennete_client"].max())
 anciennete_range = st.sidebar.slider(
     "Anciennete client (annees)",
     min_value=min_anc,
@@ -63,8 +64,8 @@ anciennete_range = st.sidebar.slider(
 )
 
 # slider pour le score de fidelite
-min_score = int(df_clean["score_fidelite"].min())
-max_score = int(df_clean["score_fidelite"].max())
+min_score = math.floor(df_clean["score_fidelite"].min())
+max_score = math.ceil(df_clean["score_fidelite"].max())
 score_range = st.sidebar.slider(
     "Score de fidelite",
     min_value=min_score,
